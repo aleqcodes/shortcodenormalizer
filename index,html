@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Conversor de shortcode a normal</title>
+  <style>
+    body {
+      font-family: Poppins, sans-serif;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 20px;
+      display: block;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    #output {
+      width: 100%;
+      margin-top: 10px;
+      padding: 20px;
+      white-space: pre-wrap;
+      background-color: lightgrey;
+      font-size: 1em;
+    }
+
+    .container {
+      width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>Conversor de shortcode a normal</h2>
+    <textarea id="inputTextarea"></textarea><br>
+    <button id="processButton">Procesar texto</button>
+    <pre id="output"></pre>
+  </div>
+
+  <script>
+    function quitarShortcodes(texto) {
+      const shortcodeRegex = /\[.*?\]/g;
+      return texto.replace(shortcodeRegex, '');
+    }
+
+    function extraerURLsImagenes(texto) {
+      const urlRegex = /\[av_image\s+src=['"]([^'"]+)['"][^\]]*?\]/g;
+      const matches = texto.matchAll(urlRegex);
+      const urls = [];
+      for (const match of matches) {
+        urls.push(match[1]);
+      }
+      return urls;
+    }
+
+    const processButton = document.getElementById('processButton');
+    const inputTextarea = document.getElementById('inputTextarea');
+    const outputPre = document.getElementById('output');
+
+    processButton.addEventListener('click', () => {
+      const texto = inputTextarea.value;
+      const textoSinShortcodes = quitarShortcodes(texto);
+      const urlsImagenes = extraerURLsImagenes(texto);
+      let outputText = 'Texto sin shortcodes:\n';
+      outputText += textoSinShortcodes + '\n\n';
+      outputText += 'URLs de imágenes:\n';
+
+      // Generar enlaces dentro del contenedor .container
+      const enlacesImagenes = urlsImagenes.map(url => {
+        return '<a href="' + url + '">' + url + '</a>';
+      });
+
+      outputText += enlacesImagenes.join('\n');
+      outputPre.innerHTML = outputText;
+    });
+  </script>
+</body>
+
+</html>
